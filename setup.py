@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
   name = 'noweb.py',
-  version = '1.0.1',
+  version = '1.0.2',
   py_modules = ['noweb'],
   author = 'dragontortoise',
   author_email = 'dragontortoise888@gmail.com',
