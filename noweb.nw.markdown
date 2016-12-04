@@ -2,8 +2,8 @@ The following literature is modified from the original version.  You
 may see the original version either from previous version of this
 file in Git (commit 81cd901a7377d0021f84f38b00afd633fe2009c2) or here:
 
-  http://jonaquino.blogspot.com/2010/04/nowebpy-or-worlds-first-executa
-  ble-blog.html
+  `http://jonaquino.blogspot.com/2010/04/nowebpy-or-worlds-first-executa
+  ble-blog.html`
 
   (shorten url: https://goo.gl/OMK80Y )
 
@@ -29,14 +29,14 @@ The modification I made to this file are as follows:
 
 This executable document first appeared as a blog post on:
 
-  http://jonaquino.blogspot.com/2010/04/nowebpy-or-worlds-first-executa
-  ble-blog.html
+  `http://jonaquino.blogspot.com/2010/04/nowebpy-or-worlds-first-executa
+  ble-blog.html`
 
   (shorten url: https://goo.gl/fPgdxH )
 
 JonathanAquino has recently been interested in the old idea of 
-[literate programming](https://goo.gl/mZ11) (full url: http://en.wikipe
-dia.org/wiki/Literate_programming).
+[literate programming](https://goo.gl/mZ11) (full url: `http://en.wikipe
+dia.org/wiki/Literate_programming`).
 
 Basically, you have a document that describes in detail how a program
 works, and it has embedded chunks of code. It allows you to see the
@@ -58,8 +58,8 @@ Why do we need to make a new tool if the
 the noweb tool is hard to install.  It's not super-hard, but most people
 don't want to spend time trying to compile it from source.  There are
 Windows binaries but you have to [get](https://goo.gl/QNkkqP)
-(full url: http://web.archive.org/web/*/http://www.literateprogramming.
-com/noweb/nowebinstall.html) them from the Wayback Machine.
+(full url: `http://web.archive.org/web/*/http://www.literateprogramming.
+com/noweb/nowebinstall.html`) them from the Wayback Machine.
 
 Anyway, the noweb tool doesn't seem to do very much, so why not write a
 little script to emulate it?
@@ -69,8 +69,8 @@ And that is what we will do now.
 # DOWNLOAD
 
 If you are just interested in the noweb.py script produced by this
-document, you can [download](https://goo.gl/lT3W3M) (full url: http://g
-ithub.com/JonathanAquino/noweb.py/raw/master/noweb.py) it from GitHub.
+document, you can [download](https://goo.gl/lT3W3M) (full url: `http://g
+ithub.com/JonathanAquino/noweb.py/raw/master/noweb.py`) it from GitHub.
 
 # USAGE
 
@@ -78,7 +78,9 @@ The end goal is to produce a Python script that will take a literate
 program as input (noweb format) and extract code from it as output.  For
 example,
 
-    noweb.py -Rhello.php hello.noweb > hello.php
+~~~
+  noweb.py -Rhello.php hello.noweb > hello.php
+~~~
 
 This will read in a file called hello.noweb and extract the code
 labelled "hello.php".  We redirect the output into a hello.php file.
@@ -99,6 +101,7 @@ Let's start by reading in the file given on the command line.  We'll
 build up a map called "chunks", which will contain the chunk names and
 the lines of each chunk.
 
+~~~
 <<Reading in the file>>=
 file = open(filename)
 chunkName = None
@@ -120,6 +123,7 @@ for line in file:
         elif chunkName:
             chunks[chunkName].append(line)
 @
+~~~
 
 # PARSING THE COMMAND-LINE ARGUMENTS
 
@@ -127,22 +131,27 @@ Now that we have a map of chunk names to the lines of each chunk, we
 need to know which chunk name the user has asked to extract.  In other
 words, we need to parse the command-line arguments given to the script:
 
-    noweb.py -Rhello.php hello.noweb
+~~~
+  noweb.py -Rhello.php hello.noweb
+~~~
 
 For simplicity, we'll assume that there are always two command-line
 arguments: in this example, "-Rhello.php" and "hello.noweb".  So let's
 grab those.
 
+~~~
 <<Parsing the command-line arguments>>=
 filename = sys.argv[-1]
 outputChunkName = sys.argv[-2][2:]
 @
+~~~
 
 # RECURSIVELY EXPANDING THE OUTPUT CHUNK
 
 So far, so good.  Now we need a recursive function to expand any chunks
 found in the output chunk requested by the user.  Take a deep breath.
 
+~~~
 <<Recursively expanding the output chunk>>=
 def expand(chunkName, indent):
     chunkLines = chunks[chunkName]
@@ -157,16 +166,19 @@ def expand(chunkName, indent):
             expandedChunkLines.append(indent + line)
     return expandedChunkLines
 @
+~~~
 
 # OUTPUTTING THE CHUNKS
 
 The last step is easy.  We just call the recursive function and output
 the result.
 
+~~~
 <<Outputting the chunks>>=
 for line in expand(outputChunkName, ""):
     print(line, end="")
 @
+~~~
 
 And we're done.  We now have a tool to extract code from a literate
 programming document.  Try it on this blog post!
@@ -175,19 +187,22 @@ programming document.  Try it on this blog post!
 
 To generate noweb.py from this document, you first need a tool to
 extract the code from it. You can use the original
-[noweb](https://goo.gl/ghNSXF) (full url: http://www.cs.tufts.edu/~nr/n
-oweb/) tool, but that's a bit cumbersome to install, so it's easier to
-use the Python script [noweb.py](https://goo.gl/lT3W3M) (full url: http
-://github.com/JonathanAquino/noweb.py/raw/master/noweb.py).
+[noweb](https://goo.gl/ghNSXF) (full url: `http://www.cs.tufts.edu/~nr/n
+oweb/`) tool, but that's a bit cumbersome to install, so it's easier to
+use the Python script [noweb.py](https://goo.gl/lT3W3M) (full url: `http
+://github.com/JonathanAquino/noweb.py/raw/master/noweb.py`).
 
 Then you can generate noweb.py from noweb.py.html as follows:
 
-    noweb.py -Rnoweb.py noweb.py.txt > noweb.py
+~~~
+  noweb.py -Rnoweb.py noweb.py.txt > noweb.py
+~~~
 
 # APPENDIX II: SUMMARY OF THE PROGRAM
 
 Here's how the pieces we have discussed fit together:
 
+~~~
 <<noweb.py>>=
 #!/usr/bin/env python
 
@@ -209,3 +224,4 @@ import sys, re
 
 <<Outputting the chunks>>
 @
+~~~
