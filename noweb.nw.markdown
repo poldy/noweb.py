@@ -1,18 +1,15 @@
 The following literature is modified from the original version.  You
 may see the original version either from previous version of this
-file in Git (commit 81cd901a7377d0021f84f38b00afd633fe2009c2) or here:
+file in Git (commit 81cd901a7377d0021f84f38b00afd633fe2009c2) or
+[here](https://goo.gl/OMK80Y):
 
-  `http://jonaquino.blogspot.com/2010/04/nowebpy-or-worlds-first-executa
-  ble-blog.html`
+The modifications I made to this file are as follows:
 
-  (shorten url: https://goo.gl/OMK80Y )
+  * Wrapping long line to have at most 72 characters per line.  And
+    using 2 spaces after each period (.) instead of 1 space.  I like it
+    this way personally.
 
-The modification I made to this file are as follows:
-
-  * Wrapping line to have at most 72 characters per line.  And using 2
-    spaces after each period (.).  I like it this way personally.
-
-  * To accomplish the above change, I have to shorten long URL using
+  * To accomplish the above changes, I have to shorten long URL using
     Goo.gl (URL Shortener Service from Google).  The script I use to
     call Goo.gl is from:
     
@@ -69,17 +66,28 @@ And that is what we will do now.
 # DOWNLOAD
 
 If you are just interested in the noweb.py script produced by this
-document, you can [download](https://goo.gl/lT3W3M) (full url: `http://g
-ithub.com/JonathanAquino/noweb.py/raw/master/noweb.py`) it from GitHub.
+document, you can download it from GitHub.
+
+* The original version of noweb.py by JonathanAquino can be downloaded
+  from [here](https://goo.gl/lT3W3M) (full url: `https://github.com/Jona
+  thanAquino/noweb.py/raw/master/noweb.py`).
+
+* Or my version of noweb.py which can be downloaded from
+  [here](https://goo.gl/TohvYS) (full url: `https://github.com/dragontor
+  toise/noweb.py/blob/master/noweb.py`).
 
 # USAGE
+
+(You may find a simpler version of how to run noweb.py in the readme
+file [here](https://goo.gl/YwWupP) (full url:
+https://github.com/dragontortoise/noweb.py/blob/master/readme.markdown).
 
 The end goal is to produce a Python script that will take a literate
 program as input (noweb format) and extract code from it as output.  For
 example,
 
 ~~~
-  noweb.py -Rhello.php hello.noweb > hello.php
+  noweb.py -Rhello.py hello.nw.markdown > hello.py
 ~~~
 
 This will read in a file called hello.noweb and extract the code
@@ -88,18 +96,96 @@ labelled "hello.php".  We redirect the output into a hello.php file.
 Or in our case, to generate noweb.py itself, it will be:
 
 ~~~
-  noweb.py -Rnoweb.py noweb.py.txt > noweb.py
+  noweb.py -Rnoweb.py noweb.nw.markdown > noweb.py
+~~~
+
+We don't need a tool to extract documentation out of the literate
+source file as it is written in Markdown format so it is already a
+documentation by itself.  Note that other noweb implementation usually
+has a tool to generate documentation from the litrate source file.
+
+From here on I will explain you how we can create noweb.py program.
+Please see below a full pseudocode of what our program will look like.
+
+Note that we need to import 2 modules which are sys and re.
+
+* sys : to handle stdin and stdout
+* re  : of course, we need to use regular expression!
+
+Note again that I see this is the pros of literate programming.  We
+can arrange the order  of codes in a human friendly way by showing
+the top-view of the whole program first before we dig deep down into
+each part.
+
+In a literate program, there are named chunks of code interspersed
+throughout the document.  Take the chunk of code below.  The name of it
+is "noweb.py".  The chunk ends with an @ sign.
+
+~~~
+<<noweb.py>>=
+#!/usr/bin/env python
+
+# noweb.py
+# By Jonathan Aquino (jonathan.aquino@gmail.com)
+# And is now forked by DragonTortoise (DragonTortoise888@gmail.com)
+#
+# This program extracts code from a literate programming document in
+# "noweb" format.  It was generated from noweb.ny.markdown, itself a
+# literate programming document.
+#
+# For more information, including the original source code and
+# documentation, see https://goo.gl/fPgdxH (full url: http://jonaquino.
+# blogspot.com/2010/04/nowebpy-or-worlds-first-executable-blog.html)
+# and https://goo.gl/WHjKAd (full url: https://github.com/dragontortoise
+# /noweb.py).
+
+import sys, re
+
+<<Parsing the command-line arguments>>
+
+# Here we read input files into list of chunks.
+<<Reading in the file>>
+
+# Here we define JonathanAquino's simplest recursive function.
+<<Function expand(): Recursively expanding the output chunk>>
+
+# Outputting the user selected chunk by calling the recursive function
+# expand() above.
+<<Outputting the chunks>>
+@
+~~~
+
+# PARSING THE COMMAND-LINE ARGUMENTS
+
+First off, the program parses command-line arguments from stdin.
+
+We need to know which chunk name the user has asked to extract.  In
+other words, we need to parse the command-line arguments given to the
+script:
+
+~~~
+  noweb.py -Rhello.py hello.nw.markdown
+~~~
+
+For simplicity, we'll assume that there are always two command-line
+arguments: in this example, "-Rhello.py" and "hello.nw.markdown".  So
+let's grab those.
+
+* hello.py is `outputChunkName`.
+* hello.nw.markdown is `filename`.
+
+~~~
+<<Parsing the command-line arguments>>=
+filename = sys.argv[-1]
+outputChunkName = sys.argv[-2][2:]
+@
 ~~~
 
 # READING IN THE FILE
 
-In a literate program, there are named chunks of code interspersed
-throughout the document.  Take the chunk of code below.  The name of it
-is "Reading in the file".  The chunk ends with an @ sign.
-
-Let's start by reading in the file given on the command line.  We'll
-build up a map called "chunks", which will contain the chunk names and
-the lines of each chunk.
+Let's read in the file given on the command line.  We'll build up a map
+called "chunks", which will contain the chunk names and the lines of
+each chunk.
 
 ~~~
 <<Reading in the file>>=
@@ -109,40 +195,19 @@ chunks = {}
 OPEN = "<<"
 CLOSE = ">>"
 for line in file:
-    match = re.match(OPEN + "([^>]+)" + CLOSE + "=", line)
+  match = re.match(OPEN + "([^>]+)" + CLOSE + "=", line)
+  if match:
+    chunkName = match.group(1)
+    # If chunkName exists in chunks, then we'll just add to the existing
+    # chunk.
+    if not chunkName in chunks:
+      chunks[chunkName] = []
+  else:
+    match = re.match("@", line)
     if match:
-        chunkName = match.group(1)
-        # If chunkName exists in chunks, then we'll just add to the
-        # existing chunk.
-        if not chunkName in chunks:
-            chunks[chunkName] = []
-    else:
-        match = re.match("@", line)
-        if match:
-            chunkName = None
-        elif chunkName:
-            chunks[chunkName].append(line)
-@
-~~~
-
-# PARSING THE COMMAND-LINE ARGUMENTS
-
-Now that we have a map of chunk names to the lines of each chunk, we
-need to know which chunk name the user has asked to extract.  In other
-words, we need to parse the command-line arguments given to the script:
-
-~~~
-  noweb.py -Rhello.php hello.noweb
-~~~
-
-For simplicity, we'll assume that there are always two command-line
-arguments: in this example, "-Rhello.php" and "hello.noweb".  So let's
-grab those.
-
-~~~
-<<Parsing the command-line arguments>>=
-filename = sys.argv[-1]
-outputChunkName = sys.argv[-2][2:]
+      chunkName = None
+    elif chunkName:
+      chunks[chunkName].append(line)
 @
 ~~~
 
@@ -150,21 +215,26 @@ outputChunkName = sys.argv[-2][2:]
 
 So far, so good.  Now we need a recursive function to expand any chunks
 found in the output chunk requested by the user.  Take a deep breath.
+We name the function `expand`.
 
 ~~~
-<<Recursively expanding the output chunk>>=
+<<Function expand(): Recursively expanding the output chunk>>=
 def expand(chunkName, indent):
-    chunkLines = chunks[chunkName]
-    expandedChunkLines = []
-    for line in chunkLines:
-        match = re.match("(\s*)" + OPEN + "([^>]+)" + CLOSE + "\s*$", \
-          line)
-        if match:
-            expandedChunkLines.extend(expand(match.group(2), indent + \
-              match.group(1)))
-        else:
-            expandedChunkLines.append(indent + line)
-    return expandedChunkLines
+  chunkLines = chunks[chunkName]
+  expandedChunkLines = []
+  for line in chunkLines:
+    # Check if the line is another chunk or not.
+    match = re.match("(\s*)" + OPEN + "([^>]+)" + CLOSE + "\s*$", \
+      line)
+    if match:
+      # Expand the chunk and add the result which are multiple lines of
+      # codes to expandedChunkLines.
+      expandedChunkLines.extend(expand(match.group(2), indent + \
+        match.group(1)))
+    else:
+      # Add a single line of code.
+      expandedChunkLines.append(indent + line)
+  return expandedChunkLines
 @
 ~~~
 
@@ -173,10 +243,13 @@ def expand(chunkName, indent):
 The last step is easy.  We just call the recursive function and output
 the result.
 
+* `expand` is the recursive function I showed you above.
+* `outputChunkName` is the first command-line argument with option -R.
+
 ~~~
 <<Outputting the chunks>>=
 for line in expand(outputChunkName, ""):
-    print(line, end="")
+  print(line, end="")
 @
 ~~~
 
@@ -189,39 +262,16 @@ To generate noweb.py from this document, you first need a tool to
 extract the code from it. You can use the original
 [noweb](https://goo.gl/ghNSXF) (full url: `http://www.cs.tufts.edu/~nr/n
 oweb/`) tool, but that's a bit cumbersome to install, so it's easier to
-use the Python script [noweb.py](https://goo.gl/lT3W3M) (full url: `http
-://github.com/JonathanAquino/noweb.py/raw/master/noweb.py`).
+use the original Python script [noweb.py](https://goo.gl/lT3W3M)
+(full url: `http://github.com/JonathanAquino/noweb.py/raw/master/noweb.
+py`) or my version [noweb.py](https://goo.gl/WHjKAd)
+(full url: https://github.com/dragontortoise/noweb.py)
 
-Then you can generate noweb.py from noweb.py.html as follows:
+Assuming you save this document into file noweb.nw.markdown .
 
-~~~
-  noweb.py -Rnoweb.py noweb.py.txt > noweb.py
-~~~
-
-# APPENDIX II: SUMMARY OF THE PROGRAM
-
-Here's how the pieces we have discussed fit together:
+Then you can generate noweb.py from noweb.nw.markdown as follows:
 
 ~~~
-<<noweb.py>>=
-#!/usr/bin/env python
-
-# noweb.py
-# By Jonathan Aquino (jonathan.aquino@gmail.com)
-#
-# This program extracts code from a literate programming document in
-# "noweb" format.  It was generated from noweb.py.txt, itself a literate
-# programming document.
-# For more information, including the original source code and
-# documentation, see https://goo.gl/fPgdxH (full url: http://jonaquino.
-# blogspot.com/2010/04/nowebpy-or-worlds-first-executable-blog.html
-
-import sys, re
-<<Parsing the command-line arguments>>
-<<Reading in the file>>
-
-<<Recursively expanding the output chunk>>
-
-<<Outputting the chunks>>
-@
+  noweb.py -Rnoweb.py noweb.nw.markdown > noweb.py
 ~~~
+
