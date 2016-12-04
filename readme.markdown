@@ -6,8 +6,9 @@ Language: Tinglish
 
 I fork the code from https://github.com/JonathanAquino/noweb.py .
 
-noweb is a literate programming tool based on Donald E. Knuth's concept
-about Literate Programming.
+noweb is a [literate programming](https://goo.gl/zJVqHB)
+(full url: https://en.wikipedia.org/wiki/Literate_programming )
+tool based on Donald E. Knuth's concept about Literate Programming.
 
 JonathanAquino is the original author of noweb.py, an implementation
 of noweb written in Python.  There are a few interesting forks
@@ -32,8 +33,8 @@ JonathanAquino.  It is:
 LaTeX or Markdown.  It doesn't use *Recursion* to tangle (printing out
 the code).
 
-I also find people in the Internet talking about Emacs's Org-mode with
-Babel.  It seems to be good and easy to use too.  However, I was
+I also find people in the Internet talking about emacs's org-mode with
+babel.  It seems to be good and easy to use too.  However, I was
 converted to vi long time ago.  It will take time for me to switch
 back to emacs so I will try it later.
 
@@ -42,5 +43,5 @@ JonathanAquino's version as I find his code is the simplest and easiest
 to understand.  He uses *recursion* which is good for code readability
 for this specific problem.
 
-= TODO
+# TODO
 - Writing how to install and run my version of noweb.py .
