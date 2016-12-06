@@ -119,9 +119,18 @@ each part.
 
 In a literate program, there are named chunks of code interspersed
 throughout the document.  Take the chunk of code below.  The name of it
-is "noweb.py".  The chunk ends with an @ sign.
+is "noweb.py".  The chunk ends with an @ sign.  Note that
+__begin=python__ and __end=python__ is a vim syntax hightlight code
+I use which you can see details about it from here:
+
+  https://github.com/dragontortoise/noweb.py/blob/master/utils/readme.m
+  arkdown
+
+  (shorten url: https://goo.gl/okWxlH )
+at the section "vim/".
 
 ~~~
+__begin=python__
 <<noweb.py>>=
 #!/usr/bin/env python
 
@@ -153,6 +162,7 @@ import sys, re
 # expand() above.
 <<Outputting the chunks>>
 @
+__end=python__
 ~~~
 
 # PARSING THE COMMAND-LINE ARGUMENTS
@@ -175,10 +185,12 @@ let's grab those.
 * hello.nw.markdown is `filename`.
 
 ~~~
+__begin=python__
 <<Parsing the command-line arguments>>=
 filename = sys.argv[-1]
 outputChunkName = sys.argv[-2][2:]
 @
+__end=python__
 ~~~
 
 # READING IN THE FILE
@@ -188,6 +200,7 @@ called "chunks", which will contain the chunk names and the lines of
 each chunk.
 
 ~~~
+__begin=python__
 <<Reading in the file>>=
 file = open(filename)
 chunkName = None
@@ -209,6 +222,7 @@ for line in file:
     elif chunkName:
       chunks[chunkName].append(line)
 @
+__end=python__
 ~~~
 
 # RECURSIVELY EXPANDING THE OUTPUT CHUNK
@@ -218,6 +232,7 @@ found in the output chunk requested by the user.  Take a deep breath.
 We name the function `expand`.
 
 ~~~
+__begin=python__
 <<Function expand(): Recursively expanding the output chunk>>=
 def expand(chunkName, indent):
   chunkLines = chunks[chunkName]
@@ -236,6 +251,7 @@ def expand(chunkName, indent):
       expandedChunkLines.append(indent + line)
   return expandedChunkLines
 @
+__end=python__
 ~~~
 
 # OUTPUTTING THE CHUNKS
@@ -247,10 +263,12 @@ the result.
 * `outputChunkName` is the first command-line argument with option -R.
 
 ~~~
+__begin=python__
 <<Outputting the chunks>>=
 for line in expand(outputChunkName, ""):
   print(line, end="")
 @
+__end=python__
 ~~~
 
 And we're done.  We now have a tool to extract code from a literate
