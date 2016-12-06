@@ -1,13 +1,14 @@
 The following literature is modified from the original version.  You
 may see the original version either from previous version of this
 file in Git (commit 81cd901a7377d0021f84f38b00afd633fe2009c2) or
-[here](https://goo.gl/OMK80Y):
+[here](https://goo.gl/OMK80Y) (full url: `https://github.com/JonathanAq
+uino/noweb.py/blob/master/noweb.py.txt`):
 
 The modifications I made to this file are as follows:
 
-  * Wrapping long line to have at most 72 characters per line.  And
-    using 2 spaces after each period (.) instead of 1 space.  I like it
-    this way personally.
+  * Wrapping long line to have at most 73 characters per line.  And
+    placing 2 spaces after each period (.) instead of 1 space.  I like
+    it this way personally.
 
   * To accomplish the above changes, I have to shorten long URL using
     Goo.gl (URL Shortener Service from Google).  The script I use to
@@ -20,7 +21,7 @@ The modifications I made to this file are as follows:
 
   * Modifying and adding more information as I see appropriate.
 
-  * Modifying Python code from Python 2 to Python 3.  This is done
+  * Porting Python code from Python 2 to Python 3.  This is done
     very easily as there was only 1 place to fix which is the print
     statement in Python 2 which is changed to be function in Python 3.
 
@@ -33,7 +34,7 @@ This executable document first appeared as a blog post on:
 
 JonathanAquino has recently been interested in the old idea of 
 [literate programming](https://goo.gl/mZ11) (full url: `http://en.wikipe
-dia.org/wiki/Literate_programming`).
+dia.org/wiki/Literate_programming`).  And me also.
 
 Basically, you have a document that describes in detail how a program
 works, and it has embedded chunks of code. It allows you to see the
@@ -45,10 +46,13 @@ Here's the thing: *what you are reading right now is a literate
 program*.
 
 Yes, you can copy this blog post into a file and feed it into the tool,
-and it will spit out a program.  Q: Where do I get the tool?  A: That's
-the program that this document spits out.  This document will produce a
-script that you can use to extract code from
-[noweb](http://en.wikipedia.org/wiki/Noweb)-format literate programs.
+and it will spit out a program.
+
+Q: Where do I get the tool?
+
+A: That's the program that this document spits out.  This document will
+  produce a script that you can use to extract code from
+  [noweb](http://en.wikipedia.org/wiki/Noweb)-format literate programs.
 
 Why do we need to make a new tool if the
 [noweb](http://en.wikipedia.org/wiki/Noweb) tool already exists? Because
