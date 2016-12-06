@@ -119,7 +119,15 @@ each part.
 
 In a literate program, there are named chunks of code interspersed
 throughout the document.  Take the chunk of code below.  The name of it
-is "noweb.py".  The chunk ends with an @ sign.
+is "noweb.py".  The chunk ends with an @ sign.  Note that
+__begin=python__ and __end=python__ is a vim syntax hightlight code
+I use which you can see details about it from here:
+
+  https://github.com/dragontortoise/noweb.py/blob/master/utils/readme.m
+  arkdown
+
+  (shorten url: https://goo.gl/okWxlH )
+at the section "vim/".
 
 ~~~
 __begin=python__
