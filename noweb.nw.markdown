@@ -216,7 +216,7 @@ for line in file:
     if not chunkName in chunks:
       chunks[chunkName] = []
   else:
-    match = re.match("@", line)
+    match = re.match("^@$", line)
     if match:
       chunkName = None
     elif chunkName:
